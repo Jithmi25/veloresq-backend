@@ -2,6 +2,11 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+};
+
+
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
   try {
@@ -12,6 +17,9 @@ export const registerUser = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+  const token = generateToken(newUser._id);
+  res.status(201).json({ _id: newUser._id, name: newUser.name, email: newUser.email, token });
+
 };
 
 export const loginUser = async (req, res) => {
@@ -28,4 +36,9 @@ export const loginUser = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+  if (user && (await user.matchPassword(password))) {
+  const token = generateToken(user._id);
+  res.json({ _id: user._id, name: user.name, email: user.email, token });
+}
+
 };

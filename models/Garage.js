@@ -12,11 +12,23 @@ const garageSchema = new mongoose.Schema({
   password:{
     type: String,
   },
-  location: {
-    type:String,
+ location: {
+  type: {
+    type: String,
+    enum: ['Point'],
+    default: 'Point'
   },
-    services:{
-        type: [String],
+  coordinates: {
+    type: [Number], 
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  }
+},
+  services:{
+    type: [String],
     }
 });
 

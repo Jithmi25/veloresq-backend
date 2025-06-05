@@ -2,17 +2,30 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Garage from '../models/Garage.js';
 
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+};
+
+
 export const registerGarage = async (req, res) => {
   const { name, email, password, location, services } = req.body;
   try {
     const hashed = await bcrypt.hash(password, 10);
     const newGarage = new Garage({ name, email, password: hashed, location, services });
     await newGarage.save();
-    res.status(201).json({ message: 'Garage registered' });
+
+    const token = generateToken(newGarage._id);
+    res.status(201).json({
+      _id: newGarage._id,
+      name: newGarage.name,
+      email: newGarage.email,
+      token
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 export const loginGarage = async (req, res) => {
   const { email, password } = req.body;
@@ -28,4 +41,8 @@ export const loginGarage = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+  if (user && (await user.matchPassword(password))) {
+  const token = generateToken(user._id);
+  res.json({ _id: user._id, name: user.name, email: user.email, token });
+}
 };
