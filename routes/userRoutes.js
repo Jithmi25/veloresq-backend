@@ -1,13 +1,9 @@
 import express from 'express';
-import { registerUser, loginUser } from '../controllers/userController.js';
-import { protectUser } from '../middleware/authMiddleware.js';
+import { register, login } from '../controllers/userController.js';
 
 const router = express.Router();
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.get('/profile', protectUser, (req, res) => {
-  res.json({ message: `Hello ${req.user.name}, welcome to your dashboard.` });
-});
+router.post('/register', register);
+router.post('/login', login);
 
 export default router;

@@ -1,9 +1,10 @@
 import express from 'express';
-import { registerGarage, loginGarage } from '../controllers/garageController.js';
+import { addGarage, getNearbyGarages, updateQueue } from '../controllers/garageController.js';
 
 const router = express.Router();
 
-router.post('/register', registerGarage);
-router.post('/login', loginGarage);
+router.post('/', addGarage);
+router.get('/nearby', getNearbyGarages);
+router.put('/:id/queue', updateQueue);
 
 export default router;

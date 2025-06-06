@@ -29,8 +29,19 @@ const garageSchema = new mongoose.Schema({
 },
   services:{
     type: [String],
-    }
+    },
+  queueLength: { 
+    type: Number, 
+    default: 0 
+  },
+  status: { 
+    type: String, 
+    enum: ['open', 'closed'], 
+    default: 'open'
+   },
 });
+
+garageSchema.index({ location: '2dsphere' });
 
 const Garage = mongoose.model('Garage', garageSchema);
 export default Garage;
