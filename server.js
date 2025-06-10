@@ -8,6 +8,7 @@ import bookingRoutes from './routes/bookingRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import emergencyRoutes from './routes/emergencyRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/emergency', emergencyRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/transaction',paymentRoutes);
 
 connectDB();
 
