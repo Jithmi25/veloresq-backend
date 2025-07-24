@@ -1,4 +1,3 @@
-import Transaction from "../models/Transaction.js";
 import axios from "axios";
 
 export const initiatePayment = async (req, res) => {
