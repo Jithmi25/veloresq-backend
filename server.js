@@ -7,7 +7,7 @@ import garageRoutes from './routes/garageRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import emergencyRoutes from './routes/emergencyRoutes.js';
-import aiRoutes from './routes/aiRoutes.js';
+import aiRoutes from './routes/diagnosisRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 
 

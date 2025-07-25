@@ -1,10 +1,14 @@
 import express from 'express';
-import { getUsers, getGarages } from '../controllers/adminController.js';
-import { protect, isAdmin } from '../middleware/authMiddleware.js';
+import {getDashboardStats,getAnalytics,getSystemHealth,getRecentActivities} from '../controllers/adminController.js';
+import { protect, restrictTo } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/users', protect, isAdmin, getUsers);
-router.get('/garages', protect, isAdmin, getGarages);
+router.use(protect, restrictTo('admin'));
+
+router.get('/dashboard', getDashboardStats);
+router.get('/analytics', getAnalytics);
+router.get('/health', getSystemHealth);
+router.get('/activities', getRecentActivities);
 
 export default router;
