@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import {getAllDiagnoses,getDiagnosisById,uploadDiagnosisAudio,getDiagnosisResult,addDiagnosisFeedback,deleteDiagnosis,getDiagnosisStats} from '../controllers/diagnosisController.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
-import { validatePagination, handleValidationErrors } from '../middleware/validation.js';
+import {validatePagination,handleValidationErrors } from '../middleware/validation.js';
 
 const router = express.Router();
 

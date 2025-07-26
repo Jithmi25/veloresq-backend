@@ -1,5 +1,5 @@
 import express from 'express';
-import {getDashboardStats,getAnalytics,getSystemHealth,getRecentActivities} from '../controllers/adminController.js';
+import { getDashboardStats, getAnalytics, getSystemHealth, getRecentActivities } from '../controllers/adminController.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
 
 const router = express.Router();

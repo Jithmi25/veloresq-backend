@@ -1,65 +1,79 @@
 import axios from "axios";
+import Booking from "../models/Booking.js";
+import User from "../models/User.js";
+import Garage from "../models/Garage.js";
 
+// Initiate Payment
 export const initiatePayment = async (req, res) => {
-  const { userId, amount, type } = req.body;
+  try {
+    const { customerId, garageId, amount, type } = req.body;
 
-  const transaction = new Transaction({
-    userId,
-    amount,
-    type,
-    status: "pending",
-  });
+    const booking = new Booking({
+      customerId,
+      garageId,
+      amount,
+      type,
+      status: "pending",
+    });
 
-  await transaction.save();
+    await booking.save();
 
-  const payHereForm = {
-    merchant_id: "YOUR_MERCHANT_ID",
-    return_url: "https://yourdomain.com/success",
-    cancel_url: "https://yourdomain.com/cancel",
-    notify_url: "https://your-backend.com/api/payments/callback",
-    order_id: transaction._id,
-    items: type + " Plan",
-    amount: amount,
-    currency: "LKR",
-    first_name: "Demo",
-    last_name: "User",
-    email: "demo@example.com",
-    phone: "0771234567",
-    address: "Colombo",
-    city: "Colombo",
-    country: "Sri Lanka",
-  };
+    const payHereForm = {
+      merchant_id: "YOUR_MERCHANT_ID",
+      return_url: "https://yourdomain.com/success",
+      cancel_url: "https://yourdomain.com/cancel",
+      notify_url: "https://your-backend.com/api/payments/callback",
+      order_id: booking._id,
+      items: `${type} Plan`,
+      amount: amount,
+      currency: "LKR",
+      first_name: "Demo",
+      last_name: "User",
+      email: "demo@example.com",
+      phone: "0771234567",
+      address: "Colombo",
+      city: "Colombo",
+      country: "Sri Lanka",
+    };
 
-  return res.status(200).json({ payHereForm });
+    return res.status(200).json({ payHereForm });
+  } catch (error) {
+    console.error("Payment initiation failed:", error);
+    res.status(500).json({ error: "Payment initiation error" });
+  }
 };
 
+// Payment Callback
 export const paymentCallback = async (req, res) => {
   try {
     const { order_id, status_code } = req.body;
 
-    const transaction = await Transaction.findById(order_id);
-    if (!transaction) return res.status(404).json({ error: "Transaction not found" });
+    const booking = await Booking.findById(order_id);
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
 
-    transaction.status = status_code === "2" ? "success" : "failed";
-    await transaction.save();
+    booking.status = status_code === "2" ? "success" : "failed";
+    await booking.save();
 
-    // Mark user or garage as premium/featured
-    if (transaction.status === "success") {
-      if (transaction.type === "premium") {
-        const user = await User.findById(transaction.userId);
-        user.premium = true;
-        await user.save();
-      } else if (transaction.type === "subscription") {
-        const garage = await Garage.findById(transaction.garageId);
-        garage.featured = true;
-        await garage.save();
+    // Update premium or featured status
+    if (booking.status === "success") {
+      if (booking.type === "premium") {
+        const user = await User.findById(booking.customerId);
+        if (user) {
+          user.premium = true;
+          await user.save();
+        }
+      } else if (booking.type === "subscription") {
+        const garage = await Garage.findById(booking.garageId);
+        if (garage) {
+          garage.featured = true;
+          await garage.save();
+        }
       }
     }
 
     res.status(200).send("Callback processed");
   } catch (error) {
-    console.error(error);
+    console.error("Payment callback failed:", error);
     res.status(500).json({ error: "Payment callback error" });
   }
 };
-

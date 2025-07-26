@@ -3,14 +3,11 @@ import { createBooking, getBookings,getBookingById,updateBooking,deleteBooking }
 
 const router = express.Router();
 
-router.route('/')
-  .post(createBooking)   
-  .get(getBookings);     
+router.post('/', createBooking);
+router.get('/', getBookings);
 
-router.route('/:id')
-  .get(getBookingById)   
-  .put(updateBooking)    
-  .delete(deleteBooking);
-
+router.get('/:id',getBookingById);
+router.put('/:id', updateBooking);
+router.delete('/:id', deleteBooking);
 
 export default router;
