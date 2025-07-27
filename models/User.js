@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -24,11 +25,8 @@ const userSchema = new mongoose.Schema({
   },
   password:{
     type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
-  
+    required: [true, 'Password is required'],
+    minlength: [6, 'Password must be at least 6 characters'],
   }, 
   phoneNumber: {
     type: String,
@@ -123,28 +121,28 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 
 // Method to generate password reset token
 userSchema.methods.createPasswordResetToken = function() {
-  const resetToken = require('crypto').randomBytes(32).toString('hex');
+  const resetToken = crypto.randomBytes(32).toString('hex');
   
-  this.passwordResetToken = require('crypto')
+  this.passwordResetToken = crypto
     .createHash('sha256')
     .update(resetToken)
     .digest('hex');
   
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; 
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   
   return resetToken;
 };
 
 // Method to generate email verification token
 userSchema.methods.createEmailVerificationToken = function() {
-  const verificationToken = require('crypto').randomBytes(32).toString('hex');
+  const verificationToken = crypto.randomBytes(32).toString('hex');
   
-  this.emailVerificationToken = require('crypto')
+  this.emailVerificationToken = crypto
     .createHash('sha256')
     .update(verificationToken)
     .digest('hex');
   
-  this.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; 
+  this.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000;
   
   return verificationToken;
 };

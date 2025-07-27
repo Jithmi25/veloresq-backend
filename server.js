@@ -20,7 +20,7 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({
-  origin: 'http://localhost:5173/',
+  origin: 'http://localhost:5179',
   credentials: true
 }));
 
@@ -74,6 +74,6 @@ app.use((error, req, res, next) => {
 
 const originalUse = app.use;
 
-app.listen(5000, () => {
-  console.log('Server running on port 5000');
+app.listen(5008, () => {
+  console.log('Server running on port 5008');
 });
